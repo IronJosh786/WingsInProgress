@@ -1,13 +1,15 @@
 "use client";
+import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 
 const page = () => {
   const { data: session, status } = useSession();
+
   const profileImage = session?.user?.profilePicture;
   const defaultImage =
     "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+
   if (status === "loading") {
     return <p>Loading...</p>;
   } else if (status === "unauthenticated") {
