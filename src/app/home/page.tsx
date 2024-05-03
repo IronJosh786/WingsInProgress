@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import { ModeToggle } from "@/components/mode-toggle";
+import { Button } from "@/components/ui/button";
 
 const page = () => {
   const { data: session, status } = useSession();
@@ -28,12 +30,8 @@ const page = () => {
       <div>
         <p>{session?.user.username}</p>
       </div>
-      <button
-        onClick={() => signOut({ callbackUrl: "/" })}
-        className="bg-white text-black rounded-md p-2"
-      >
-        logout
-      </button>
+      <Button onClick={() => signOut({ callbackUrl: "/" })}>logout</Button>
+      <ModeToggle />
     </div>
   );
 };
