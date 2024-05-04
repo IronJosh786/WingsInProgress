@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   await dbConnection();
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User;
-  if (!session || !user) {
+  if (!(session && user)) {
     return Response.json(
       { success: false, message: "Login Required" },
       { status: 401 }
@@ -25,7 +25,36 @@ export async function POST(request: Request) {
       );
     }
 
-    const newRecord = await RecordModel.create(data);
+    let {
+      dateOfDeparture,
+      airCraft,
+      from,
+      to,
+      departureTime,
+      arrivalTime,
+      totalDuration,
+      numberOfDayLandings,
+      numberOfNightLandings,
+      flightType,
+      remark,
+    } = result.data;
+
+    const dataToSend = {
+      dateOfDeparture,
+      airCraft,
+      from,
+      to,
+      departureTime,
+      arrivalTime,
+      totalDuration,
+      numberOfDayLandings,
+      numberOfNightLandings,
+      flightType,
+      remark,
+      flownBy: session.user._id,
+    };
+
+    const newRecord = await RecordModel.create(dataToSend);
 
     if (!newRecord) {
       return Response.json(

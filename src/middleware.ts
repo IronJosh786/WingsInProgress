@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export { default } from "next-auth/middleware";
 
 export const config = {
-  matcher: ["/home", "/login", "/"],
+  matcher: ["/home", "/new-record", "/login", "/"],
 };
 
 export async function middleware(request: NextRequest) {
@@ -14,7 +14,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (!token && url.pathname.startsWith("/home")) {
+  if (
+    !token &&
+    (url.pathname.startsWith("/home") || url.pathname.startsWith("/new-record"))
+  ) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
