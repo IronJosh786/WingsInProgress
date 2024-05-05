@@ -33,7 +33,7 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import NewRecordSchema from "@/schemas/newRecordSchema";
 
-export default function DatePickerForm() {
+export default function Page() {
   const { data: session } = useSession();
 
   const form = useForm<z.infer<typeof NewRecordSchema>>({
@@ -53,13 +53,12 @@ export default function DatePickerForm() {
       numberOfNightLandings: 0,
       flightType: "",
       remark: "",
-      flownBy: session?.user._id,
+      flownBy: session?.user._id || "663623b84c93f1a70d664eba",
     },
   });
 
   const watchDepartureTime = form.watch("departureTime");
   const watchArrivalTime = form.watch("arrivalTime");
-  const watchFlownBy = form.watch("flownBy");
 
   const calculateTotalDuration = (departure: string, arrival: string) => {
     const depHours = departure.slice(0, 2);
@@ -111,25 +110,21 @@ export default function DatePickerForm() {
   }, [watchDepartureTime, watchArrivalTime]);
 
   const onSubmit = async (data: z.infer<typeof NewRecordSchema>) => {
-    console.log("in submit");
     try {
       const response = await axios.post("/api/createrecord", data);
-      console.log(response);
       toast.success(response.data.message);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
-      console.log(axiosError);
       toast.error(axiosError.response?.data.message);
     }
   };
 
-  useEffect(() => {
-    console.log("flown by: ", watchFlownBy);
-  }, []);
-
   return (
-    <div className="w-full">
-      <div className="max-w-sm mx-auto my-4 border border-current p-2 rounded-md">
+    <div className="w-full p-2">
+      <div className="max-w-[450px] mx-auto">
+        <h4 className="font-medium text-lg">New Record</h4>
+      </div>
+      <div className="max-w-[450px] mx-auto my-4 border border-input p-4 rounded-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -144,7 +139,7 @@ export default function DatePickerForm() {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
+                            "w-full pl-3 text-left font-normal",
                             !field.value && "text-muted-foreground"
                           )}
                         >
@@ -157,7 +152,7 @@ export default function DatePickerForm() {
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent className="w-auto p-0" align="end">
                       <Calendar
                         mode="single"
                         selected={field.value}
@@ -327,7 +322,7 @@ export default function DatePickerForm() {
             <Button
               type="submit"
               disabled={form.formState.isSubmitting}
-              className="disabled:bg-gray-500"
+              className="disabled:bg-gray-500 w-full"
             >
               {form.formState.isSubmitting ? "Please Wait" : "Submit"}
             </Button>

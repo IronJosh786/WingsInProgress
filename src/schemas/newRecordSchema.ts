@@ -16,10 +16,10 @@ const NewRecordSchema = z.object({
   to: stringSchema,
   departureTime: z
     .string()
-    .length(4, { message: `Time is expected to be something as '1230'` }),
+    .length(4, { message: `Time should adhere to this format: '1230'` }),
   arrivalTime: z
     .string()
-    .length(4, { message: `Time is expected to be something as '2345'` }),
+    .length(4, { message: `Time should adhere to this format: '2345'` }),
   totalDuration: stringSchema,
   numberOfDayLandings: z.number().nonnegative(),
   numberOfNightLandings: z.number().nonnegative(),
