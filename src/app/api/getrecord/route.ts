@@ -15,7 +15,9 @@ export async function GET(request: Request) {
   }
 
   try {
-    const records = await RecordModel.find({ flownBy: session.user._id });
+    const records = await RecordModel.find({ flownBy: session.user._id }).sort({
+      createdAt: -1,
+    });
 
     if (!records.length) {
       return Response.json(

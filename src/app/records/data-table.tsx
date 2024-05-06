@@ -54,7 +54,7 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-4">
         <div className="flex flex-col items-start gap-2 md:flex-row md:gap-0 justify-between md:items-center w-full">
           <Input
-            placeholder="Filter locations, durations..."
+            placeholder="Filter locations, types..."
             value={globalFilter || ""}
             onChange={(event) => setGlobalFilter(event.target.value)}
             className="max-w-[250px]"

@@ -32,9 +32,15 @@ const Page = () => {
 
   return (
     <div className="w-full p-2">
-      <div className="max-w-2xl mx-auto py-10">
-        <h4 className="font-medium text-lg mb-4">All Records</h4>
-        {loading ? <Loader /> : <DataTable columns={columns} data={data} />}
+      <div className="max-w-2xl mx-auto">
+        <h4 className="font-medium text-lg">All Records</h4>
+        {loading ? (
+          <div className="mt-4">
+            <Loader />
+          </div>
+        ) : (
+          <DataTable columns={columns} data={data} />
+        )}
       </div>
     </div>
   );

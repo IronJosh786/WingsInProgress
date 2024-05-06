@@ -37,6 +37,10 @@ export const columns: ColumnDef<Record>[] = [
     header: "To",
   },
   {
+    accessorKey: "flightType",
+    header: "Type",
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const router = useRouter();
