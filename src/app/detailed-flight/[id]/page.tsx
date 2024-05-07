@@ -31,13 +31,13 @@ const Page = () => {
     fetchDetails();
   }, [id]);
   return (
-    <div className="min-h-screen p-2 grid place-items-center">
+    <div className="p-2">
       <div className="max-w-[450px] mx-auto">
-        <h4 className="font-medium text-lg mb-4">Flight Details</h4>
+        <h4 className="font-medium text-lg mb-4 text-center">Flight Details</h4>
         {loading ? (
           <Loader />
         ) : (
-          <Card className="w-[300px] xs:w-[350px]">
+          <Card className="w-[300px] xs:w-[350px] mx-auto">
             <CardContent className="">
               <div className="mt-4 grid w-full items-center gap-4">
                 <div className="flex flex-col gap-1">

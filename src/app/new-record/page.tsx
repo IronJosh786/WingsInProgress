@@ -10,6 +10,13 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -120,9 +127,9 @@ export default function Page() {
   };
 
   return (
-    <div className="w-full p-2">
+    <div className="p-2">
       <div className="max-w-[450px] mx-auto">
-        <h4 className="font-medium text-lg">New Record</h4>
+        <h4 className="font-medium text-lg text-center">New Record</h4>
       </div>
       <div className="max-w-[450px] mx-auto my-4 border border-input p-4 rounded-md">
         <Form {...form}>
@@ -301,9 +308,38 @@ export default function Page() {
               control={form.control}
               name="flightType"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
+                <FormItem>
                   <FormLabel>Flight Type</FormLabel>
-                  <Input placeholder="flight type" {...field} />
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select the type of flight" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Solo">Solo</SelectItem>
+                      <SelectItem value="Dual">Dual</SelectItem>
+                      <SelectItem value="Night">Night</SelectItem>
+                      <SelectItem value="GF">
+                        GF <span className="opacity-50">(General Flying)</span>
+                      </SelectItem>
+                      <SelectItem value="IF">
+                        IF{" "}
+                        <span className="opacity-50">(Instrument Flying)</span>
+                      </SelectItem>
+                      <SelectItem value="X-Cty">
+                        X-Cty{" "}
+                        <span className="opacity-50">(Cross Country)</span>
+                      </SelectItem>
+                      <SelectItem value="CL">
+                        CL{" "}
+                        <span className="opacity-50">(Circuit & Landings)</span>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

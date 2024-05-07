@@ -15,6 +15,32 @@ import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 
 export const columns: ColumnDef<Record>[] = [
   {
+    id: "actions",
+    cell: ({ row }) => {
+      const router = useRouter();
+      const handleClick = () => {
+        router.push(`/detailed-flight/${row.original._id}`);
+      };
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleClick}>
+              View flight details
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
+  {
     accessorKey: "dateOfDeparture",
     header: ({ column }) => {
       return (
@@ -39,31 +65,5 @@ export const columns: ColumnDef<Record>[] = [
   {
     accessorKey: "flightType",
     header: "Type",
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const router = useRouter();
-      const handleClick = () => {
-        router.push(`/detailed-flight/${row.original._id}`);
-      };
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleClick}>
-              View flight details
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
   },
 ];

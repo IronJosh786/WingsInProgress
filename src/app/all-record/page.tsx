@@ -31,9 +31,9 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="w-full p-2">
+    <div className="p-2">
       <div className="max-w-2xl mx-auto">
-        <h4 className="font-medium text-lg">All Records</h4>
+        <h4 className="font-medium text-lg text-center">All Records</h4>
         {loading ? (
           <div className="mt-4">
             <Loader />

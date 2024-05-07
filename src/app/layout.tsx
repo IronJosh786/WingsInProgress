@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./provider";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
+import type { Metadata } from "next";
+import { Providers } from "./provider";
+import Navbar from "@/components/navbar";
+import { Inter } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import Footer from "@/components/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
         <Providers>
           <ThemeProvider
             attribute="class"
@@ -28,7 +30,9 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Toaster richColors position="top-right" />
+            <Navbar />
             {children}
+            <Footer />
           </ThemeProvider>
         </Providers>
       </body>
