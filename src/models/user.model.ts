@@ -14,6 +14,7 @@ const userSchema: Schema<User> = new Schema({
     required: true,
     trim: true,
     unique: true,
+    index: true,
   },
   name: {
     type: String,

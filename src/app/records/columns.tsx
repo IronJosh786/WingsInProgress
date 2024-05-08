@@ -13,14 +13,25 @@ import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 
-export const columns: ColumnDef<Record>[] = [
+function FlightCellActions(row: any) {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/detailed-flight/${row.original._id}`);
+  };
+
+  return handleClick;
+}
+
+export const Columns: ColumnDef<Record>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const router = useRouter();
-      const handleClick = () => {
-        router.push(`/detailed-flight/${row.original._id}`);
-      };
+      // const router = useRouter();
+      // const handleClick = () => {
+      //   router.push(`/detailed-flight/${row.original._id}`);
+      // };
+      const handleClick = FlightCellActions(row);
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

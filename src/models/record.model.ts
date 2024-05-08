@@ -81,6 +81,7 @@ const recordSchema: Schema<Record> = new Schema(
     flownBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      index: true,
     },
   },
   { timestamps: true }

@@ -5,7 +5,7 @@ import utc from "dayjs/plugin/utc";
 import Loader from "@/components/loader";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { columns } from "../records/columns";
+import { Columns } from "../records/columns";
 import timezone from "dayjs/plugin/timezone";
 import { Record } from "@/models/record.model";
 import { ApiResponse } from "@/types/apiResponse";
@@ -47,7 +47,7 @@ const Page = () => {
             <Loader />
           </div>
         ) : (
-          <DataTable columns={columns} data={data} />
+          <DataTable columns={Columns} data={data} />
         )}
       </div>
     </div>

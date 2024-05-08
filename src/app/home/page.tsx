@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 
-const page = () => {
+const Page = () => {
   const { data: session, status } = useSession();
 
   const profileImage = session?.user?.profilePicture;
@@ -35,4 +35,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
