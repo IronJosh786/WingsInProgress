@@ -1,9 +1,12 @@
 "use client";
+import dayjs from "dayjs";
 import { toast } from "sonner";
+import utc from "dayjs/plugin/utc";
 import Loader from "@/components/loader";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { columns } from "../records/columns";
+import timezone from "dayjs/plugin/timezone";
 import { Record } from "@/models/record.model";
 import { ApiResponse } from "@/types/apiResponse";
 import { DataTable } from "../records/data-table";
@@ -11,13 +14,18 @@ import { DataTable } from "../records/data-table";
 const Page = () => {
   const [data, setData] = useState<Record[]>([]);
   const [loading, setLoading] = useState(true);
+
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+
   useEffect(() => {
     const fetchRecords = async () => {
       try {
         const { data } = await axios.get("/api/getrecord");
         const modifiedRecords = data.records.map((record: Record) => {
-          const datePart = record.dateOfDeparture.toString().split("T")[0];
-          return { ...record, dateOfDeparture: datePart };
+          const localDate = dayjs.utc(record.dateOfDeparture).local();
+          const formattedDate = localDate.format("YYYY-MM-DD");
+          return { ...record, dateOfDeparture: formattedDate };
         });
         setData(modifiedRecords);
       } catch (error) {

@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -20,7 +19,7 @@ const page = () => {
 
   return (
     <div className="container mx-auto text-center flex flex-col justify-center items-center min-h-screen gap-8">
-      <Image
+      <img
         src={profileImage || defaultImage}
         width={100}
         height={100}

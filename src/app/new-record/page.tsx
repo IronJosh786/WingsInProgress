@@ -21,8 +21,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { airports } from "@/data";
 import { useEffect } from "react";
 import {
   InputOTP,
@@ -39,6 +48,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import NewRecordSchema from "@/schemas/newRecordSchema";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 
 export default function Page() {
   const { data: session } = useSession();
@@ -181,7 +191,7 @@ export default function Page() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Aircraft name</FormLabel>
-                  <Input placeholder="aircraft name" {...field} />
+                  <Input placeholder="Aircraft name" {...field} />
                   <FormMessage />
                 </FormItem>
               )}
@@ -192,7 +202,7 @@ export default function Page() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Aircraft model</FormLabel>
-                  <Input placeholder="aircraft model" {...field} />
+                  <Input placeholder="Aircraft model" {...field} />
                   <FormMessage />
                 </FormItem>
               )}
@@ -203,7 +213,59 @@ export default function Page() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>From</FormLabel>
-                  <Input placeholder="from" {...field} />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "max-w-[300px] justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? airports.find(
+                                (airport) => airport.value === field.value
+                              )?.value
+                            : "Select airport"}
+                          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="max-w-[300px] p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Search airports..."
+                          className="h-9"
+                        />
+                        <CommandEmpty>No airport found.</CommandEmpty>
+                        <CommandGroup>
+                          <CommandList>
+                            {airports.map((airport) => (
+                              <CommandItem
+                                value={airport.label}
+                                key={airport.value}
+                                onSelect={() => {
+                                  form.setValue("from", airport.value);
+                                }}
+                              >
+                                {airport.label}
+                                <CheckIcon
+                                  className={cn(
+                                    "ml-auto h-4 w-4",
+                                    airport.value === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandList>
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -214,7 +276,59 @@ export default function Page() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>To</FormLabel>
-                  <Input placeholder="to" {...field} />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "max-w-[300px] justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? airports.find(
+                                (airport) => airport.value === field.value
+                              )?.value
+                            : "Select airport"}
+                          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="max-w-[300px] p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Search airports..."
+                          className="h-9"
+                        />
+                        <CommandEmpty>No airport found.</CommandEmpty>
+                        <CommandGroup>
+                          <CommandList>
+                            {airports.map((airport) => (
+                              <CommandItem
+                                value={airport.label}
+                                key={airport.value}
+                                onSelect={() => {
+                                  form.setValue("to", airport.value);
+                                }}
+                              >
+                                {airport.label}
+                                <CheckIcon
+                                  className={cn(
+                                    "ml-auto h-4 w-4",
+                                    airport.value === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandList>
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -265,7 +379,7 @@ export default function Page() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Total Duration</FormLabel>
-                  <Input placeholder="total duration" {...field} disabled />
+                  <Input placeholder="Total duration" {...field} disabled />
                   <FormMessage />
                 </FormItem>
               )}
@@ -278,7 +392,7 @@ export default function Page() {
                   <FormLabel>Number Of Day Landings</FormLabel>
                   <Input
                     type="number"
-                    placeholder="number of day landings"
+                    placeholder="Number of day landings"
                     min={0}
                     value={field.value !== undefined ? String(field.value) : ""}
                     onChange={(e) => field.onChange(parseInt(e.target.value))}
@@ -295,7 +409,7 @@ export default function Page() {
                   <FormLabel>Number Of Night Landings</FormLabel>
                   <Input
                     type="number"
-                    placeholder="number of night landings"
+                    placeholder="Number of night landings"
                     min={0}
                     value={field.value !== undefined ? String(field.value) : ""}
                     onChange={(e) => field.onChange(parseInt(e.target.value))}
@@ -350,7 +464,7 @@ export default function Page() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Remark</FormLabel>
-                  <Input placeholder="remark" {...field} />
+                  <Input placeholder="Remark" {...field} />
                   <FormMessage />
                 </FormItem>
               )}

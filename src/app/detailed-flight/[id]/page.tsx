@@ -1,9 +1,12 @@
 "use client";
+import dayjs from "dayjs";
 import { toast } from "sonner";
+import utc from "dayjs/plugin/utc";
 import Loader from "@/components/loader";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import timezone from "dayjs/plugin/timezone";
 import { Badge } from "@/components/ui/badge";
 import { Record } from "@/models/record.model";
 import { ApiResponse } from "@/types/apiResponse";
@@ -16,11 +19,16 @@ const Page = () => {
   const [data, setData] = useState<Record>();
   const [loading, setLoading] = useState(true);
 
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         const { data } = await axios.get(`/api/singleFlightDetails/${id}`);
-        setData(data.details);
+        const localDate = dayjs.utc(data.details.dateOfDeparture).local();
+        const formattedDate = localDate.format("YYYY-MM-DD");
+        setData({ ...data.details, dateOfDeparture: formattedDate });
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
         toast.error(axiosError.response?.data.message);
@@ -42,9 +50,7 @@ const Page = () => {
               <div className="mt-4 grid w-full items-center gap-4">
                 <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500">Date:</p>
-                  <Badge>
-                    {data?.dateOfDeparture?.toString().split("T")[0]}
-                  </Badge>
+                  <Badge>{data?.dateOfDeparture.toString()}</Badge>
                 </div>
                 <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500">Aircraft:</p>
