@@ -8,9 +8,11 @@ export const stringSchema = z
 
 const NewRecordSchema = z.object({
   dateOfDeparture: z.coerce.date(),
+  dateOfArrival: z.coerce.date(),
   airCraft: z.object({
-    name: stringSchema,
     model: stringSchema,
+    registration: stringSchema,
+    engine: stringSchema,
   }),
   from: stringSchema,
   to: stringSchema,
@@ -24,6 +26,7 @@ const NewRecordSchema = z.object({
   numberOfDayLandings: z.number().nonnegative(),
   numberOfNightLandings: z.number().nonnegative(),
   flightType: stringSchema,
+  exercises: z.string().optional(),
   remark: z.string().optional(),
   flownBy: z.string().refine((val) => {
     return mongoose.Types.ObjectId.isValid(val);

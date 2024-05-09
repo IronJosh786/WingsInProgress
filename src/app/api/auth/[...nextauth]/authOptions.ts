@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async session({ session }) {
+      await dbConnection();
       const user = await UserModel.findOne({ email: session.user.email });
       session.user._id = user?._id.toString();
       session.user.email = user?.email;

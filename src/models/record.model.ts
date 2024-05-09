@@ -2,9 +2,11 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface Record extends Document {
   dateOfDeparture: Date;
+  dateOfArrival: Date;
   airCraft: {
-    name: string;
     model: string;
+    registration: string;
+    engine: string;
   };
   from: string;
   to: string;
@@ -14,6 +16,7 @@ export interface Record extends Document {
   numberOfDayLandings: number;
   numberOfNightLandings: number;
   flightType: string;
+  exercises?: string;
   remark?: string;
   flownBy: Types.ObjectId;
 }
@@ -24,13 +27,22 @@ const recordSchema: Schema<Record> = new Schema(
       type: Date,
       required: true,
     },
+    dateOfArrival: {
+      type: Date,
+      required: true,
+    },
     airCraft: {
-      name: {
+      model: {
         type: String,
         required: true,
         trim: true,
       },
-      model: {
+      registration: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      engine: {
         type: String,
         required: true,
         trim: true,
@@ -72,6 +84,10 @@ const recordSchema: Schema<Record> = new Schema(
     flightType: {
       type: String,
       required: true,
+      trim: true,
+    },
+    exercises: {
+      type: String,
       trim: true,
     },
     remark: {

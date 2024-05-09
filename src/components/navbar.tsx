@@ -1,22 +1,34 @@
 "use client";
 import { Button } from "./ui/button";
 import { ModeToggle } from "./mode-toggle";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { DropdownMenuComponent } from "./drop-down-menu";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import Image from "next/image";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  useEffect(() => {
+    if (status === "loading") {
+      return;
+    }
+    if (!session) {
+      router.push("/");
+      return;
+    }
+  }, [session, status, router]);
+
   return (
-    <div className="sticky top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:dark:bg-zinc-800/30 py-3">
+    <div className="sticky top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:bg-gray-200 lg:dark:bg-zinc-800/30 py-3">
       <div className="flex justify-between items-center container px-1 xs:px-4">
         <div
           onClick={() => router.push("/")}
           className="text-2xl font-bold flex gap-4 hover:cursor-pointer"
         >
-          <img
+          <Image
             src="/Jarno-Single-engine-Cessna.svg"
             alt="Vercel Logo"
             width={100}
@@ -30,7 +42,13 @@ const Navbar = () => {
           {status === "authenticated" ? (
             <DropdownMenuComponent />
           ) : (
-            <Button onClick={() => signIn()}>Login</Button>
+            <Button
+              disabled={status === "loading"}
+              className="disabled:bg-gray-400"
+              onClick={() => signIn()}
+            >
+              {status === "loading" ? "Processing" : "Login"}
+            </Button>
           )}
         </div>
       </div>

@@ -1,4 +1,5 @@
 "use client";
+import axios, { AxiosError } from "axios";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,26 +13,38 @@ import { Record } from "@/models/record.model";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, ArrowUpDown } from "lucide-react";
+import { toast } from "sonner";
+import { ApiResponse } from "@/types/apiResponse";
 
 function FlightCellActions(row: any) {
   const router = useRouter();
-
   const handleClick = () => {
     router.push(`/detailed-flight/${row.original._id}`);
   };
-
   return handleClick;
+}
+
+function FlightRecordDelete(row: any) {
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `/api/deleterecord/${row.original._id}`
+      );
+      toast.success(response.data.message);
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>;
+      toast.error(axiosError.response?.data.message);
+    }
+  };
+  return handleDelete;
 }
 
 export const Columns: ColumnDef<Record>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      // const router = useRouter();
-      // const handleClick = () => {
-      //   router.push(`/detailed-flight/${row.original._id}`);
-      // };
       const handleClick = FlightCellActions(row);
+      const handleDelete = FlightRecordDelete(row);
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -45,6 +58,9 @@ export const Columns: ColumnDef<Record>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleClick}>
               View flight details
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDelete}>
+              Delete Record
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -27,6 +27,7 @@ export async function POST(request: Request) {
 
     let {
       dateOfDeparture,
+      dateOfArrival,
       airCraft,
       from,
       to,
@@ -36,11 +37,13 @@ export async function POST(request: Request) {
       numberOfDayLandings,
       numberOfNightLandings,
       flightType,
+      exercises,
       remark,
     } = result.data;
 
     const dataToSend = {
       dateOfDeparture,
+      dateOfArrival,
       airCraft,
       from,
       to,
@@ -50,6 +53,7 @@ export async function POST(request: Request) {
       numberOfDayLandings,
       numberOfNightLandings,
       flightType,
+      exercises,
       remark,
       flownBy: session.user._id,
     };

@@ -32,7 +32,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { airports } from "@/data";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   InputOTP,
   InputOTPGroup,
@@ -52,14 +52,18 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 
 export default function Page() {
   const { data: session } = useSession();
+  const [fromOpen, setFromOpen] = useState(false);
+  const [toOpen, setToOpen] = useState(false);
 
   const form = useForm<z.infer<typeof NewRecordSchema>>({
     resolver: zodResolver(NewRecordSchema),
     defaultValues: {
       dateOfDeparture: undefined,
+      dateOfArrival: undefined,
       airCraft: {
-        name: "",
         model: "",
+        registration: "",
+        engine: "",
       },
       from: "",
       to: "",
@@ -69,6 +73,7 @@ export default function Page() {
       numberOfDayLandings: 0,
       numberOfNightLandings: 0,
       flightType: "",
+      exercises: "",
       remark: "",
       flownBy: session?.user._id || "663623b84c93f1a70d664eba",
     },
@@ -76,60 +81,90 @@ export default function Page() {
 
   const watchDepartureTime = form.watch("departureTime");
   const watchArrivalTime = form.watch("arrivalTime");
+  const watchDepartureDate = form.watch("dateOfDeparture");
+  const watchArrivalDate = form.watch("dateOfArrival");
 
-  const calculateTotalDuration = (departure: string, arrival: string) => {
-    const depHours = departure.slice(0, 2);
-    const depMinutes = departure.slice(2, 4);
-    const arrHours = arrival.slice(0, 2);
-    const arrMinutes = arrival.slice(2, 4);
+  const calculateTotalDuration = useCallback(
+    (
+      departureTime: string,
+      arrivalTime: string,
+      departureDate: Date,
+      arrivalDate: Date
+    ) => {
+      const departureDateTime = new Date(departureDate);
+      const arrivalDateTime = new Date(arrivalDate);
 
-    if (parseInt(depHours) > 23 || parseInt(arrHours) > 23) {
-      toast.error("Hours cannot be greater than 23");
-      return "";
-    }
-
-    if (parseInt(depMinutes) > 59 || parseInt(arrMinutes) > 59) {
-      toast.error("Minutes cannot be greater than 59");
-      return "";
-    }
-
-    let durationHours = parseInt(arrHours) - parseInt(depHours);
-    let durationMinutes = parseInt(arrMinutes) - parseInt(depMinutes);
-
-    if (durationHours < 0) {
-      durationHours += 24;
-    }
-    if (durationMinutes < 0) {
-      durationMinutes += 60;
-      durationHours -= 1;
-    }
-
-    const formattedHours = durationHours.toString();
-    const formattedMinutes = durationMinutes.toString();
-
-    const totalDuration = `${formattedHours}h ${formattedMinutes}m`;
-
-    form.setValue("totalDuration", totalDuration);
-  };
-
-  useEffect(() => {
-    const updateTotalDuration = () => {
-      if (watchArrivalTime.length !== 4 && watchArrivalTime.length !== 4) {
+      if (departureDateTime > arrivalDateTime) {
+        form.setValue("totalDuration", "");
+        toast.error("Departure date cannot be greater than arrival date");
         return;
       }
-      const departureTime = watchDepartureTime;
-      const arrivalTime = watchArrivalTime;
-      if (departureTime && arrivalTime) {
-        calculateTotalDuration(departureTime, arrivalTime);
+
+      const departureHours = parseInt(departureTime.slice(0, 2));
+      const departureMinutes = parseInt(departureTime.slice(2));
+      const arrivalHours = parseInt(arrivalTime.slice(0, 2));
+      const arrivalMinutes = parseInt(arrivalTime.slice(2));
+
+      departureDateTime.setHours(departureHours, departureMinutes);
+      arrivalDateTime.setHours(arrivalHours, arrivalMinutes);
+
+      if (
+        departureDateTime.toDateString() === arrivalDateTime.toDateString() &&
+        departureDateTime > arrivalDateTime
+      ) {
+        form.setValue("totalDuration", "");
+        toast.error(
+          "Departure time cannot be greater than arrival time on same day"
+        );
+        return;
       }
-    };
+
+      const timeDifference =
+        arrivalDateTime.getTime() - departureDateTime.getTime();
+
+      const totalHours = Math.floor(timeDifference / (1000 * 60 * 60));
+      const totalMinutes = Math.floor(
+        (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+      );
+
+      const totalDuration = `${totalHours}h ${totalMinutes}m`;
+      form.setValue("totalDuration", totalDuration);
+    },
+    [form]
+  );
+
+  const updateTotalDuration = useCallback(() => {
+    if (
+      watchDepartureTime.length !== 4 ||
+      watchArrivalTime.length !== 4 ||
+      !watchDepartureDate ||
+      !watchArrivalDate
+    ) {
+      return;
+    }
+    calculateTotalDuration(
+      watchDepartureTime,
+      watchArrivalTime,
+      watchDepartureDate,
+      watchArrivalDate
+    );
+  }, [
+    calculateTotalDuration,
+    watchDepartureTime,
+    watchArrivalTime,
+    watchDepartureDate,
+    watchArrivalDate,
+  ]);
+
+  useEffect(() => {
     updateTotalDuration();
-  }, [watchDepartureTime, watchArrivalTime]);
+  }, [updateTotalDuration]);
 
   const onSubmit = async (data: z.infer<typeof NewRecordSchema>) => {
     try {
       const response = await axios.post("/api/createrecord", data);
       toast.success(response.data.message);
+      form.reset();
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error(axiosError.response?.data.message);
@@ -144,6 +179,52 @@ export default function Page() {
       <div className="max-w-[450px] mx-auto my-4 border border-input p-4 rounded-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="airCraft.model"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Aircraft model</FormLabel>
+                  <Input placeholder="e.g. Cessna 172" {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="airCraft.registration"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Aircraft registration</FormLabel>
+                  <Input placeholder="e.g. VT-FSA" {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="airCraft.engine"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Aircraft Engine</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select the aircraft engine" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Single">Single</SelectItem>
+                      <SelectItem value="Multi">Multi</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="dateOfDeparture"
@@ -187,22 +268,41 @@ export default function Page() {
             />
             <FormField
               control={form.control}
-              name="airCraft.name"
+              name="dateOfArrival"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Aircraft name</FormLabel>
-                  <Input placeholder="Aircraft name" {...field} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="airCraft.model"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Aircraft model</FormLabel>
-                  <Input placeholder="Aircraft model" {...field} />
+                  <FormLabel>Date of Arrival</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="end">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -213,7 +313,7 @@ export default function Page() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>From</FormLabel>
-                  <Popover>
+                  <Popover open={fromOpen} onOpenChange={setFromOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -248,6 +348,7 @@ export default function Page() {
                                 key={airport.value}
                                 onSelect={() => {
                                   form.setValue("from", airport.value);
+                                  setFromOpen(false);
                                 }}
                               >
                                 {airport.label}
@@ -276,7 +377,7 @@ export default function Page() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>To</FormLabel>
-                  <Popover>
+                  <Popover open={toOpen} onOpenChange={setToOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -311,6 +412,7 @@ export default function Page() {
                                 key={airport.value}
                                 onSelect={() => {
                                   form.setValue("to", airport.value);
+                                  setToOpen(false);
                                 }}
                               >
                                 {airport.label}
@@ -460,11 +562,22 @@ export default function Page() {
             />
             <FormField
               control={form.control}
+              name="exercises"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Exercises</FormLabel>
+                  <Input placeholder="Exercises (Optional)" {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="remark"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Remark</FormLabel>
-                  <Input placeholder="Remark" {...field} />
+                  <Input placeholder="Remark (Optional)" {...field} />
                   <FormMessage />
                 </FormItem>
               )}

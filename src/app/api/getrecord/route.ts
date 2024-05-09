@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
     if (!records.length) {
       return Response.json(
-        { success: true, message: "No records to show" },
+        { success: true, message: "No records to show", records: [] },
         { status: 200 }
       );
     }

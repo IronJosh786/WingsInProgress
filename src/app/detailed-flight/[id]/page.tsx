@@ -28,7 +28,13 @@ const Page = () => {
         const { data } = await axios.get(`/api/singleFlightDetails/${id}`);
         const localDate = dayjs.utc(data.details.dateOfDeparture).local();
         const formattedDate = localDate.format("YYYY-MM-DD");
-        setData({ ...data.details, dateOfDeparture: formattedDate });
+        const localDate2 = dayjs.utc(data.details.dateOfArrival).local();
+        const formattedDate2 = localDate2.format("YYYY-MM-DD");
+        setData({
+          ...data.details,
+          dateOfDeparture: formattedDate,
+          dateOfArrival: formattedDate2,
+        });
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
         toast.error(axiosError.response?.data.message);
@@ -49,32 +55,55 @@ const Page = () => {
             <CardContent className="">
               <div className="mt-4 grid w-full items-center gap-4">
                 <div className="flex flex-col gap-1">
-                  <p className="text-xs text-gray-500">Date:</p>
-                  <Badge>{data?.dateOfDeparture.toString()}</Badge>
-                </div>
-                <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500">Aircraft:</p>
-                  <Badge>
-                    {data?.airCraft.name} ({data?.airCraft.model})
+                  <Badge className="uppercase">
+                    {data?.airCraft.registration} (
+                    <span className="capitalize">{data?.airCraft.model}</span>)
                   </Badge>
                 </div>
-                <div className="flex flex-col gap-1">
+                <Badge>{data?.airCraft.engine}</Badge>
+                <div className="w-full overflow-y-auto">
                   <p className="text-xs text-gray-500">Itinerary:</p>
-                  <div className="flex gap-2 items-center">
-                    <PlaneTakeoff size={"20px"} />
-                    <div className="flex items-center gap-2 uppercase">
-                      <Badge>{data?.from}</Badge> <Clock size={"16px"} />{" "}
-                      <Badge>{data?.departureTime}</Badge>
-                    </div>
-                  </div>
-                  <div className="mt-1 flex gap-2 items-center">
-                    <PlaneLanding size={"20px"} />
-                    <div className="flex items-center gap-2 uppercase">
-                      <Badge>{data?.to}</Badge> <Clock size={"16px"} />{" "}
-                      <Badge>{data?.arrivalTime}</Badge>
-                    </div>
-                  </div>
+                  <table className="w-full mt-1">
+                    <thead className="text-xs">
+                      <tr className="m-0 border-t p-0">
+                        <th className="border px-2 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right">
+                          <Badge>Departure</Badge>
+                        </th>
+                        <th className="border px-2 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right">
+                          <Badge>Arrival</Badge>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-xs">
+                      <tr className="m-0 border-t p-0">
+                        <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
+                          {data?.dateOfDeparture.toString()}
+                        </td>
+                        <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
+                          {data?.dateOfArrival.toString()}
+                        </td>
+                      </tr>
+                      <tr className="m-0 border-t p-0">
+                        <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
+                          {data?.departureTime}
+                        </td>
+                        <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
+                          {data?.arrivalTime}
+                        </td>
+                      </tr>
+                      <tr className="m-0 border-t p-0">
+                        <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
+                          {data?.from}
+                        </td>
+                        <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
+                          {data?.to}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
+
                 <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500">Duration:</p>
                   <Badge>{data?.totalDuration}</Badge>
@@ -90,10 +119,18 @@ const Page = () => {
                   <p className="text-xs text-gray-500">Flight Type:</p>
                   <Badge>{data?.flightType}</Badge>
                 </div>
-                <div className="flex flex-col gap-1">
-                  <p className="text-xs text-gray-500">Remark:</p>
-                  <Badge>{data?.remark}</Badge>
-                </div>
+                {data?.exercises && (
+                  <div className="flex flex-col gap-1">
+                    <p className="text-xs text-gray-500">Exercises:</p>
+                    <Badge>{data?.exercises}</Badge>
+                  </div>
+                )}
+                {data?.remark && (
+                  <div className="flex flex-col gap-1">
+                    <p className="text-xs text-gray-500">Remark:</p>
+                    <Badge>{data?.remark}</Badge>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

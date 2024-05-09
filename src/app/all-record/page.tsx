@@ -22,6 +22,10 @@ const Page = () => {
     const fetchRecords = async () => {
       try {
         const { data } = await axios.get("/api/getrecord");
+        if (!data.records.length) {
+          setData([]);
+          return;
+        }
         const modifiedRecords = data.records.map((record: Record) => {
           const localDate = dayjs.utc(record.dateOfDeparture).local();
           const formattedDate = localDate.format("YYYY-MM-DD");
@@ -30,6 +34,7 @@ const Page = () => {
         setData(modifiedRecords);
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
+        console.log(axiosError);
         toast.error(axiosError.response?.data.message);
       } finally {
         setLoading(false);

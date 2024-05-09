@@ -1,11 +1,11 @@
 import { User } from "next-auth";
+import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import dbConnection from "@/utils/dbConnection";
-import { authOptions } from "../../auth/[...nextauth]/authOptions";
 import RecordModel from "@/models/record.model";
-import { NextRequest } from "next/server";
+import { authOptions } from "../../auth/[...nextauth]/authOptions";
 
-export async function GET(request: NextRequest) {
+export async function DELETE(request: NextRequest) {
   await dbConnection();
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User;
@@ -19,21 +19,20 @@ export async function GET(request: NextRequest) {
   try {
     const url = request.nextUrl.toString();
     const id = url.substring(url.lastIndexOf("/") + 1);
-    const details = await RecordModel.findById(id);
-    if (!details) {
+    const deletedRecord = await RecordModel.findByIdAndDelete(id);
+    if (!deletedRecord) {
       return Response.json(
-        { success: false, message: "Could not find details" },
+        { success: false, message: "Could not delete the record" },
         { status: 404 }
       );
     }
-    console.log(details);
     return Response.json(
-      { success: true, message: "Fetched details", details: details },
+      { success: true, message: "Deleted the record" },
       { status: 200 }
     );
   } catch (error) {
     return Response.json(
-      { success: false, message: "Could not fetch flight details" },
+      { success: false, message: "Could not delete the record" },
       { status: 500 }
     );
   }
