@@ -54,6 +54,8 @@ export default function Page() {
   const { data: session } = useSession();
   const [fromOpen, setFromOpen] = useState(false);
   const [toOpen, setToOpen] = useState(false);
+  const [departureDateOpen, setDepartureDateOpen] = useState(false);
+  const [arrivalDateOpen, setArrivalDateOpen] = useState(false);
 
   const form = useForm<z.infer<typeof NewRecordSchema>>({
     resolver: zodResolver(NewRecordSchema),
@@ -105,6 +107,17 @@ export default function Page() {
       const arrivalHours = parseInt(arrivalTime.slice(0, 2));
       const arrivalMinutes = parseInt(arrivalTime.slice(2));
 
+      if (departureHours > 23 || arrivalHours > 23) {
+        toast.error("Hours cannot be greater than 23");
+        form.setValue("totalDuration", "");
+        return;
+      }
+      if (departureMinutes > 59 || arrivalMinutes > 59) {
+        toast.error("Minutes cannot be greater than 59");
+        form.setValue("totalDuration", "");
+        return;
+      }
+
       departureDateTime.setHours(departureHours, departureMinutes);
       arrivalDateTime.setHours(arrivalHours, arrivalMinutes);
 
@@ -155,6 +168,13 @@ export default function Page() {
     watchDepartureDate,
     watchArrivalDate,
   ]);
+
+  useEffect(() => {
+    if (watchDepartureDate > watchArrivalDate) {
+      form.setValue("dateOfArrival", watchDepartureDate);
+      toast.error("Departure date cannot be greater than arrival date");
+    }
+  }, [watchDepartureDate, watchArrivalDate]);
 
   useEffect(() => {
     updateTotalDuration();
@@ -231,7 +251,10 @@ export default function Page() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Date of Departure</FormLabel>
-                  <Popover>
+                  <Popover
+                    open={departureDateOpen}
+                    onOpenChange={setDepartureDateOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -254,7 +277,10 @@ export default function Page() {
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(e) => {
+                          field.onChange(e);
+                          setDepartureDateOpen(false);
+                        }}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
                         }
@@ -272,7 +298,10 @@ export default function Page() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Date of Arrival</FormLabel>
-                  <Popover>
+                  <Popover
+                    open={arrivalDateOpen}
+                    onOpenChange={setArrivalDateOpen}
+                  >
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -295,7 +324,10 @@ export default function Page() {
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(e) => {
+                          field.onChange(e);
+                          setArrivalDateOpen(false);
+                        }}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
                         }

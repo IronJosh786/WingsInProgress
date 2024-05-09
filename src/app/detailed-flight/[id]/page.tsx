@@ -61,7 +61,7 @@ const Page = () => {
                     <span className="capitalize">{data?.airCraft.model}</span>)
                   </Badge>
                 </div>
-                <Badge>{data?.airCraft.engine}</Badge>
+                <Badge>{data?.airCraft.engine} Engine</Badge>
                 <div className="w-full overflow-y-auto">
                   <p className="text-xs text-gray-500">Itinerary:</p>
                   <table className="w-full mt-1">
