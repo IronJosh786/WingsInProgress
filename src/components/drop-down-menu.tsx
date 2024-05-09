@@ -24,6 +24,7 @@ export function DropdownMenuComponent() {
       return;
     } else if (status === "authenticated") {
       profilePicture = session?.user?.profilePicture;
+      return;
     } else {
       router.push("/");
       return;

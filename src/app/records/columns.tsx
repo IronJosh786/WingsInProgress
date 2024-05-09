@@ -15,13 +15,31 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { ApiResponse } from "@/types/apiResponse";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-function FlightCellActions(row: any) {
+function FlightRecordView(row: any) {
   const router = useRouter();
   const handleClick = () => {
     router.push(`/detailed-flight/${row.original._id}`);
   };
   return handleClick;
+}
+
+function FlightRecordUpdate(row: any) {
+  const router = useRouter();
+  const handleEdit = () => {
+    router.push(`/new-record/${row.original._id}`);
+  };
+  return handleEdit;
 }
 
 function FlightRecordDelete(row: any) {
@@ -43,27 +61,54 @@ export const Columns: ColumnDef<Record>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const handleClick = FlightCellActions(row);
+      const handleClick = FlightRecordView(row);
+      const handleEdit = FlightRecordUpdate(row);
       const handleDelete = FlightRecordDelete(row);
+
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleClick}>
-              View flight details
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDelete}>
-              Delete Record
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Dialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleClick}>
+                View flight details
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleEdit}>
+                Edit flight details
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <DialogTrigger>Delete Record</DialogTrigger>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. Are you sure you want to
+                permanently delete this record from our servers?
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  type="submit"
+                  variant={"destructive"}
+                  onClick={handleDelete}
+                >
+                  Delete
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       );
     },
   },
