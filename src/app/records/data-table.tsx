@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { DataTableToolbar } from "@/components/ui/data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -51,15 +52,16 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex items-center gap-2 py-4">
         <div className="flex flex-col items-start gap-2 md:flex-row md:gap-0 justify-between md:items-center w-full">
           <Input
-            placeholder="Filter locations, types..."
+            placeholder="Filter locations..."
             value={globalFilter || ""}
             onChange={(event) => setGlobalFilter(event.target.value)}
             className="max-w-[250px]"
           />
         </div>
+        <DataTableToolbar table={table} />
       </div>
       <div className="rounded-md border">
         <Table>

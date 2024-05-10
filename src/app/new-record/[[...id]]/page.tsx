@@ -33,6 +33,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { airports } from "@/data";
+import utc from "dayjs/plugin/utc";
 import { useCallback, useEffect, useState } from "react";
 import {
   InputOTP,
@@ -50,8 +51,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
-import NewRecordSchema from "@/schemas/newRecordSchema";
+import MultiSelectFormField from "@/components/ui/multi-select";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import NewRecordSchema, { flightTypeList } from "@/schemas/newRecordSchema";
 
 export default function Page() {
   const { data: session } = useSession();
@@ -60,6 +62,8 @@ export default function Page() {
   const [departureDateOpen, setDepartureDateOpen] = useState(false);
   const [arrivalDateOpen, setArrivalDateOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  dayjs.extend(utc);
 
   const router = useRouter();
 
@@ -83,7 +87,7 @@ export default function Page() {
       totalDuration: "",
       numberOfDayLandings: 0,
       numberOfNightLandings: 0,
-      flightType: "",
+      flightType: ["Solo"],
       exercises: "",
       remark: "",
       flownBy: session?.user._id || "663623b84c93f1a70d664eba",
@@ -251,6 +255,7 @@ export default function Page() {
         form.setValue("remark", data.details.remark);
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
+        console.log(axiosError);
         toast.error(axiosError.response?.data.message);
       } finally {
         setLoading(false);
@@ -638,42 +643,16 @@ export default function Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Flight Type</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select the type of flight" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Solo">Solo</SelectItem>
-                        <SelectItem value="Dual">Dual</SelectItem>
-                        <SelectItem value="Night">Night</SelectItem>
-                        <SelectItem value="GF">
-                          GF{" "}
-                          <span className="opacity-50">(General Flying)</span>
-                        </SelectItem>
-                        <SelectItem value="IF">
-                          IF{" "}
-                          <span className="opacity-50">
-                            (Instrument Flying)
-                          </span>
-                        </SelectItem>
-                        <SelectItem value="X-Cty">
-                          X-Cty{" "}
-                          <span className="opacity-50">(Cross Country)</span>
-                        </SelectItem>
-                        <SelectItem value="CL">
-                          CL{" "}
-                          <span className="opacity-50">
-                            (Circuit & Landings)
-                          </span>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <MultiSelectFormField
+                        options={flightTypeList}
+                        value={field.value}
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                        placeholder="Select the type of flight"
+                        variant="inverted"
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

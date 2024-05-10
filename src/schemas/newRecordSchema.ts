@@ -1,6 +1,39 @@
 import { z } from "zod";
 import mongoose from "mongoose";
 
+const VALUES = ["Solo", "Dual", "Night", "GF", "IF", "X-Cty", "CL"] as const;
+
+export const flightTypeList = [
+  {
+    value: "Solo",
+    label: "Solo",
+  },
+  {
+    value: "Dual",
+    label: "Dual",
+  },
+  {
+    value: "Night",
+    label: "Night",
+  },
+  {
+    value: "GF",
+    label: "General Flying",
+  },
+  {
+    value: "IF",
+    label: "Instrument Flying",
+  },
+  {
+    value: "X-Cty",
+    label: "Cross Country",
+  },
+  {
+    value: "CL",
+    label: "Circuit & Landings",
+  },
+];
+
 export const stringSchema = z
   .string()
   .trim()
@@ -25,7 +58,7 @@ const NewRecordSchema = z.object({
   totalDuration: stringSchema,
   numberOfDayLandings: z.number().nonnegative(),
   numberOfNightLandings: z.number().nonnegative(),
-  flightType: stringSchema,
+  flightType: z.array(z.enum(VALUES)),
   exercises: z.string().optional(),
   remark: z.string().optional(),
   flownBy: z.string().refine((val) => {

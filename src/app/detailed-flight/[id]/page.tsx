@@ -117,7 +117,13 @@ const Page = () => {
                 </div>
                 <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500">Flight Type:</p>
-                  <Badge>{data?.flightType}</Badge>
+                  <Badge className="p-2 flex gap-2 flex-wrap">
+                    {data?.flightType.map((flight, index) => (
+                      <Badge variant={"secondary"} key={index}>
+                        {flight}
+                      </Badge>
+                    ))}
+                  </Badge>
                 </div>
                 {data?.exercises && (
                   <div className="flex flex-col gap-1">

@@ -25,6 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 
 function FlightRecordView(row: any) {
   const router = useRouter();
@@ -136,6 +137,37 @@ export const Columns: ColumnDef<Record>[] = [
   },
   {
     accessorKey: "flightType",
-    header: "Type",
+    header: "Flight Type",
+    cell: ({ row }) => {
+      const flightTypes = row.original.flightType;
+
+      if (!flightTypes || flightTypes.length === 0) {
+        return null;
+      }
+
+      return (
+        <div className="flex min-w-[100px] max-w-[150px] items-center flex-wrap gap-1">
+          {flightTypes.map((type: string, index: number) => (
+            <Badge key={index}>{type}</Badge>
+          ))}
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      const selectedFlightTypes = value;
+      const flightTypes = row.original.flightType;
+
+      if (!selectedFlightTypes || selectedFlightTypes.length === 0) {
+        return true;
+      }
+
+      if (!flightTypes || flightTypes.length === 0) {
+        return false;
+      }
+
+      return selectedFlightTypes.every((type: any) =>
+        flightTypes.includes(type)
+      );
+    },
   },
 ];

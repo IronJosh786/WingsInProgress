@@ -15,7 +15,7 @@ export interface Record extends Document {
   totalDuration: string;
   numberOfDayLandings: number;
   numberOfNightLandings: number;
-  flightType: string;
+  flightType: string[];
   exercises?: string;
   remark?: string;
   flownBy: Types.ObjectId;
@@ -82,7 +82,7 @@ const recordSchema: Schema<Record> = new Schema(
       required: true,
     },
     flightType: {
-      type: String,
+      type: [String],
       required: true,
       trim: true,
     },
