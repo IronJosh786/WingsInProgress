@@ -189,34 +189,29 @@ export default function Page() {
     updateTotalDuration();
   }, [updateTotalDuration]);
 
-  const handleNewData = async (data: z.infer<typeof NewRecordSchema>) => {
-    try {
-      const response = await axios.post("/api/createrecord", data);
-      toast.success(response.data.message);
-      form.reset();
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
-      toast.error(axiosError.response?.data.message);
-    }
-  };
-
-  const handleUpdatedData = async (data: z.infer<typeof NewRecordSchema>) => {
-    try {
-      const response = await axios.put(`/api/edit-flight-details/${id}`, data);
-      toast.success(response.data.message);
-      form.reset();
-      router.replace(`/detailed-flight/${id}`);
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
-      toast.error(axiosError.response?.data.message);
-    }
-  };
-
   const onSubmit = async (data: z.infer<typeof NewRecordSchema>) => {
     if (!id) {
-      handleNewData(data);
+      try {
+        const response = await axios.post("/api/createrecord", data);
+        toast.success(response.data.message);
+        form.reset();
+      } catch (error) {
+        const axiosError = error as AxiosError<ApiResponse>;
+        toast.error(axiosError.response?.data.message);
+      }
     } else {
-      handleUpdatedData(data);
+      try {
+        const response = await axios.put(
+          `/api/edit-flight-details/${id}`,
+          data
+        );
+        toast.success(response.data.message);
+        form.reset();
+        router.replace(`/detailed-flight/${id}`);
+      } catch (error) {
+        const axiosError = error as AxiosError<ApiResponse>;
+        toast.error(axiosError.response?.data.message);
+      }
     }
   };
 
