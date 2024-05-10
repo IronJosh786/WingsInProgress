@@ -1,5 +1,6 @@
 "use client";
 import { z } from "zod";
+import dayjs from "dayjs";
 import {
   Form,
   FormItem,
@@ -38,8 +39,9 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import axios, { AxiosError } from "axios";
+import Loader from "@/components/loader";
 import { useForm } from "react-hook-form";
+import axios, { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -47,11 +49,9 @@ import { ApiResponse } from "@/types/apiResponse";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useParams, useRouter } from "next/navigation";
 import NewRecordSchema from "@/schemas/newRecordSchema";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import dayjs from "dayjs";
-import { useParams, useRouter } from "next/navigation";
-import Loader from "@/components/loader";
 
 export default function Page() {
   const { data: session } = useSession();
@@ -220,54 +220,51 @@ export default function Page() {
     }
   };
 
-  if (id) {
-    useEffect(() => {
-      const fetchData = async () => {
-        setLoading(true);
-        try {
-          const { data } = await axios.get(`/api/singleFlightDetails/${id}`);
-          const localDate = dayjs
-            .utc(data.details.dateOfDeparture)
-            .local()
-            .toDate();
-          const localDate2 = dayjs
-            .utc(data.details.dateOfArrival)
-            .local()
-            .toDate();
-          form.setValue("airCraft.engine", data.details.airCraft.engine);
-          form.setValue("airCraft.model", data.details.airCraft.model);
-          form.setValue(
-            "airCraft.registration",
-            data.details.airCraft.registration
-          );
-          form.setValue("dateOfDeparture", localDate);
-          form.setValue("dateOfArrival", localDate2);
-          form.setValue("from", data.details.from);
-          form.setValue("to", data.details.to);
-          form.setValue("departureTime", data.details.departureTime);
-          form.setValue("arrivalTime", data.details.arrivalTime);
-          form.setValue("totalDuration", data.details.totalDuration);
-          form.setValue(
-            "numberOfDayLandings",
-            data.details.numberOfDayLandings
-          );
-          form.setValue(
-            "numberOfNightLandings",
-            data.details.numberOfNightLandings
-          );
-          form.setValue("flightType", data.details.flightType);
-          form.setValue("exercises", data.details.exercises);
-          form.setValue("remark", data.details.remark);
-        } catch (error) {
-          const axiosError = error as AxiosError<ApiResponse>;
-          toast.error(axiosError.response?.data.message);
-        } finally {
-          setLoading(false);
-        }
-      };
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const { data } = await axios.get(`/api/singleFlightDetails/${id}`);
+        const localDate = dayjs
+          .utc(data.details.dateOfDeparture)
+          .local()
+          .toDate();
+        const localDate2 = dayjs
+          .utc(data.details.dateOfArrival)
+          .local()
+          .toDate();
+        form.setValue("airCraft.engine", data.details.airCraft.engine);
+        form.setValue("airCraft.model", data.details.airCraft.model);
+        form.setValue(
+          "airCraft.registration",
+          data.details.airCraft.registration
+        );
+        form.setValue("dateOfDeparture", localDate);
+        form.setValue("dateOfArrival", localDate2);
+        form.setValue("from", data.details.from);
+        form.setValue("to", data.details.to);
+        form.setValue("departureTime", data.details.departureTime);
+        form.setValue("arrivalTime", data.details.arrivalTime);
+        form.setValue("totalDuration", data.details.totalDuration);
+        form.setValue("numberOfDayLandings", data.details.numberOfDayLandings);
+        form.setValue(
+          "numberOfNightLandings",
+          data.details.numberOfNightLandings
+        );
+        form.setValue("flightType", data.details.flightType);
+        form.setValue("exercises", data.details.exercises);
+        form.setValue("remark", data.details.remark);
+      } catch (error) {
+        const axiosError = error as AxiosError<ApiResponse>;
+        toast.error(axiosError.response?.data.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (id) {
       fetchData();
-    }, [id]);
-  }
+    }
+  }, [id]);
 
   return (
     <div className="p-2">

@@ -20,21 +20,26 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn(params) {
-      await dbConnection();
-      const profile = params.profile as GoogleProfile;
-      const userExists = await UserModel.findOne({ email: profile?.email });
-      if (!userExists) {
-        const email = profile?.email;
-        const atIndex = email.indexOf("@");
-        const username = email.slice(0, atIndex);
-        await UserModel.create({
-          email,
-          name: profile?.name,
-          profilePicture: profile?.picture,
-          username,
-        });
+      try {
+        await dbConnection();
+        const profile = params.profile as GoogleProfile;
+        const userExists = await UserModel.findOne({ email: profile?.email });
+        if (!userExists) {
+          const email = profile?.email;
+          const atIndex = email.indexOf("@");
+          const username = email.slice(0, atIndex);
+          await UserModel.create({
+            email,
+            name: profile?.name,
+            profilePicture: profile?.picture,
+            username,
+          });
+        }
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
       }
-      return true;
     },
     async session({ session }) {
       await dbConnection();
