@@ -4,51 +4,53 @@ import { toast } from "sonner";
 import utc from "dayjs/plugin/utc";
 import Loader from "@/components/loader";
 import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import timezone from "dayjs/plugin/timezone";
 import { Badge } from "@/components/ui/badge";
 import { Record } from "@/models/record.model";
+import { useQuery } from "@tanstack/react-query";
 import { ApiResponse } from "@/types/apiResponse";
 import { Card, CardContent } from "@/components/ui/card";
-import { PlaneTakeoff, PlaneLanding, Clock } from "lucide-react";
 
 const Page = () => {
   const param = useParams();
   const id = param.id;
-  const [data, setData] = useState<Record>();
-  const [loading, setLoading] = useState(true);
 
   dayjs.extend(utc);
   dayjs.extend(timezone);
 
-  useEffect(() => {
-    const fetchDetails = async () => {
-      try {
-        const { data } = await axios.get(`/api/singleFlightDetails/${id}`);
-        const localDate = dayjs.utc(data.details.dateOfDeparture).local();
-        const formattedDate = localDate.format("YYYY-MM-DD");
-        const localDate2 = dayjs.utc(data.details.dateOfArrival).local();
-        const formattedDate2 = localDate2.format("YYYY-MM-DD");
-        setData({
-          ...data.details,
-          dateOfDeparture: formattedDate,
-          dateOfArrival: formattedDate2,
-        });
-      } catch (error) {
-        const axiosError = error as AxiosError<ApiResponse>;
-        toast.error(axiosError.response?.data.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDetails();
-  }, [id]);
+  const fetchDetails = async () => {
+    try {
+      const { data } = await axios.get(`/api/singleFlightDetails/${id}`);
+      const localDate = dayjs.utc(data.details.dateOfDeparture).local();
+      const formattedDate = localDate.format("YYYY-MM-DD");
+      const localDate2 = dayjs.utc(data.details.dateOfArrival).local();
+      const formattedDate2 = localDate2.format("YYYY-MM-DD");
+      return {
+        ...data.details,
+        dateOfDeparture: formattedDate,
+        dateOfArrival: formattedDate2,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>;
+      toast.error(axiosError.response?.data.message);
+    }
+  };
+
+  const { isLoading, data } = useQuery({
+    queryKey: ["singleRecord", id],
+    queryFn: fetchDetails,
+    enabled: !!id,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+  const typedData = data as Record;
+
   return (
     <div className="p-2">
       <div className="max-w-[450px] mx-auto">
         <h4 className="font-medium text-lg mb-4 text-center">Flight Details</h4>
-        {loading ? (
+        {isLoading ? (
           <Loader />
         ) : (
           <Card className="w-[300px] xs:w-[350px] mx-auto">
@@ -57,11 +59,14 @@ const Page = () => {
                 <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500">Aircraft:</p>
                   <Badge className="uppercase">
-                    {data?.airCraft.registration} (
-                    <span className="capitalize">{data?.airCraft.model}</span>)
+                    {typedData?.airCraft?.registration} (
+                    <span className="capitalize">
+                      {typedData?.airCraft?.model}
+                    </span>
+                    )
                   </Badge>
                 </div>
-                <Badge>{data?.airCraft.engine} Engine</Badge>
+                <Badge>{typedData?.airCraft?.engine} Engine</Badge>
                 <div className="w-full overflow-y-auto">
                   <p className="text-xs text-gray-500">Itinerary:</p>
                   <table className="w-full mt-1">
@@ -78,26 +83,26 @@ const Page = () => {
                     <tbody className="text-xs">
                       <tr className="m-0 border-t p-0">
                         <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
-                          {data?.dateOfDeparture.toString()}
+                          {typedData?.dateOfDeparture?.toString()}
                         </td>
                         <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
-                          {data?.dateOfArrival.toString()}
-                        </td>
-                      </tr>
-                      <tr className="m-0 border-t p-0">
-                        <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
-                          {data?.departureTime}
-                        </td>
-                        <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
-                          {data?.arrivalTime}
+                          {typedData?.dateOfArrival?.toString()}
                         </td>
                       </tr>
                       <tr className="m-0 border-t p-0">
                         <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
-                          {data?.from}
+                          {typedData?.departureTime}
                         </td>
                         <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
-                          {data?.to}
+                          {typedData?.arrivalTime}
+                        </td>
+                      </tr>
+                      <tr className="m-0 border-t p-0">
+                        <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
+                          {typedData?.from}
+                        </td>
+                        <td className="border px-2 py-1 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
+                          {typedData?.to}
                         </td>
                       </tr>
                     </tbody>
@@ -106,35 +111,35 @@ const Page = () => {
 
                 <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500">Duration:</p>
-                  <Badge>{data?.totalDuration}</Badge>
+                  <Badge>{typedData?.totalDuration}</Badge>
                 </div>
                 <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500">Number of Landings:</p>
                   <div className="text-sm">
-                    Day <Badge>{data?.numberOfDayLandings}</Badge> Night{" "}
-                    <Badge>{data?.numberOfNightLandings}</Badge>
+                    Day <Badge>{typedData?.numberOfDayLandings}</Badge> Night{" "}
+                    <Badge>{typedData?.numberOfNightLandings}</Badge>
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500">Flight Type:</p>
                   <Badge className="p-2 flex gap-2 flex-wrap">
-                    {data?.flightType.map((flight, index) => (
+                    {typedData?.flightType?.map((flight, index) => (
                       <Badge variant={"secondary"} key={index}>
                         {flight}
                       </Badge>
                     ))}
                   </Badge>
                 </div>
-                {data?.exercises && (
+                {typedData?.exercises && (
                   <div className="flex flex-col gap-1">
                     <p className="text-xs text-gray-500">Exercises:</p>
-                    <Badge>{data?.exercises}</Badge>
+                    <Badge>{typedData?.exercises}</Badge>
                   </div>
                 )}
-                {data?.remark && (
+                {typedData?.remark && (
                   <div className="flex flex-col gap-1">
                     <p className="text-xs text-gray-500">Remark:</p>
-                    <Badge>{data?.remark}</Badge>
+                    <Badge>{typedData?.remark}</Badge>
                   </div>
                 )}
               </div>

@@ -51,6 +51,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import MultiSelectFormField from "@/components/ui/multi-select";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import NewRecordSchema, { flightTypeList } from "@/schemas/newRecordSchema";
@@ -66,7 +67,7 @@ export default function Page() {
   dayjs.extend(utc);
 
   const router = useRouter();
-
+  const queryClient = useQueryClient();
   const param = useParams();
   const id = param.id;
 
@@ -198,6 +199,10 @@ export default function Page() {
       try {
         const response = await axios.post("/api/createrecord", data);
         toast.success(response.data.message);
+        queryClient.invalidateQueries({
+          queryKey: ["records"],
+          refetchType: "all",
+        });
         form.reset();
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>;
@@ -210,6 +215,14 @@ export default function Page() {
           data
         );
         toast.success(response.data.message);
+        queryClient.invalidateQueries({
+          queryKey: ["records"],
+          refetchType: "all",
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["singleRecord"],
+          refetchType: "all",
+        });
         form.reset();
         router.replace(`/detailed-flight/${id}`);
       } catch (error) {

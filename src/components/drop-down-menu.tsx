@@ -48,6 +48,9 @@ export function DropdownMenuComponent() {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuItem onClick={() => router.push("/")}>
+            Home
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/new-record")}>
             New Record
           </DropdownMenuItem>

@@ -1,4 +1,5 @@
 "use client";
+import { toast } from "sonner";
 import axios, { AxiosError } from "axios";
 import {
   DropdownMenu,
@@ -12,9 +13,8 @@ import { useRouter } from "next/navigation";
 import { Record } from "@/models/record.model";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, ArrowUpDown } from "lucide-react";
-import { toast } from "sonner";
 import { ApiResponse } from "@/types/apiResponse";
+import { MoreHorizontal, ArrowUpDown, Eye, Pencil, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -26,6 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { useQueryClient, InvalidateQueryFilters } from "@tanstack/react-query";
 
 function FlightRecordView(row: any) {
   const router = useRouter();
@@ -44,11 +45,13 @@ function FlightRecordUpdate(row: any) {
 }
 
 function FlightRecordDelete(row: any) {
+  const queryClient = useQueryClient();
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
         `/api/deleterecord/${row.original._id}`
       );
+      queryClient.invalidateQueries({ queryKey: ["records"] });
       toast.success(response.data.message);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
@@ -78,13 +81,23 @@ export const Columns: ColumnDef<Record>[] = [
             <DropdownMenuContent align="start">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleClick}>
+              <DropdownMenuItem
+                className="flex items-center gap-2"
+                onClick={handleClick}
+              >
+                <Eye size={"16px"} />
                 View flight details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleEdit}>
+              <DropdownMenuItem
+                className="flex items-center gap-2"
+                onClick={handleEdit}
+              >
+                <Pencil size={"16px"} />
                 Edit flight details
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="flex items-center gap-2">
+                <Trash2 size={"16px"} />
                 <DialogTrigger>Delete Record</DialogTrigger>
               </DropdownMenuItem>
             </DropdownMenuContent>
