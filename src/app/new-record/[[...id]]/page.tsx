@@ -279,6 +279,16 @@ export default function Page() {
     }
   }, [id]);
 
+  useEffect(() => {
+    const { errors } = form.formState;
+    if (Object.keys(errors).length > 0) {
+      const errorMessages = Object.values(errors)
+        .map((error) => error?.message)
+        .join("\n");
+      toast.error(errorMessages);
+    }
+  }, [form.formState.errors]);
+
   return (
     <div className="p-2">
       <div className="max-w-[450px] mx-auto">
