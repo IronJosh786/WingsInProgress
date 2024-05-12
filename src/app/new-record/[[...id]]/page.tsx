@@ -283,7 +283,7 @@ export default function Page() {
     const { errors } = form.formState;
     if (Object.keys(errors).length > 0) {
       const errorMessages = Object.values(errors)
-        .map((error) => error?.message)
+        .map((error) => error?.message as string)
         .join("\n");
       toast.error(errorMessages);
     }
