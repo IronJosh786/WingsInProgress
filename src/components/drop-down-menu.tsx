@@ -1,5 +1,5 @@
+import Link from "next/link";
 import { useEffect } from "react";
-import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,7 +34,10 @@ export function DropdownMenuComponent() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="flex gap-2 items-center hover:cursor-pointer">
+        <Link
+          href={"#"}
+          className="flex gap-2 items-center hover:cursor-pointer"
+        >
           <Avatar>
             <AvatarImage src={profilePicture} alt="profile picture" />
             <AvatarFallback>
@@ -42,7 +45,7 @@ export function DropdownMenuComponent() {
             </AvatarFallback>
           </Avatar>
           <ChevronDown />
-        </div>
+        </Link>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>

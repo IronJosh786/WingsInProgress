@@ -96,9 +96,11 @@ export const Columns: ColumnDef<Record>[] = [
                 Edit flight details
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex items-center gap-2">
-                <Trash2 size={"16px"} />
-                <DialogTrigger>Delete Record</DialogTrigger>
+              <DropdownMenuItem>
+                <DialogTrigger className="flex items-center gap-2">
+                  <Trash2 size={"16px"} />
+                  Delete Record
+                </DialogTrigger>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
