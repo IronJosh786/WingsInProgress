@@ -1,8 +1,17 @@
-# WingsInProgress
+# WingsInProgress Web Application
 
-## Under development
+Introducing WingsInProgress, your premier Next.js application designed exclusively for aspiring pilots to effortlessly log their flight details and track their progress towards mastering the art of aviation. Crafted with precision using Next.js, WingsInProgress offers a user-friendly platform for pilots to record their flight data, ensuring every journey is meticulously documented. Whether you're a novice aviator or a seasoned flyer, WingsInProgress simplifies the process, making flight logging a breeze. Join us as we embark on this journey together, soaring towards new horizons with WingsInProgress!
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Live Demo
+
+Check out the live demo: [Live Demo](https://wings-in-progress.vercel.app/)
+
+## Features
+
+- **User Authentication:** Securely log in and log out using NextAuth with Google OAuth integration for a seamless authentication experience.
+- **Flight Management:** Effortlessly add, view, edit, and delete flight details, including various types of flights, ensuring comprehensive tracking of your aviation progress.
+- **Flight Duration Analysis:** Gain insights into your flying endeavors with the ability to view overall durations for different types of flights, empowering you to monitor your performance and progress effectively.
+- **Responsive Design:** The application is designed to work seamlessly across different devices and screen sizes.
 
 ## Getting Started
 
@@ -22,19 +31,31 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Contributing
 
-## Learn More
+Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
 
-To learn more about Next.js, take a look at the following resources:
+- Fork the repository
+- Create your feature branch
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+git checkout -b feature/YourFeature
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Commit your changes
 
-## Deploy on Vercel
+```bash
+git commit -am 'Add some feature'
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Push to the branch
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+git push origin feature/YourFeature
+```
+
+- Create a new Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
