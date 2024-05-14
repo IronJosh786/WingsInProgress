@@ -12,7 +12,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "WingsInProgress",
-  description: "Log your flight details",
+  description:
+    "Effortlessly track your flights and analyze your progress with WingsInProgress, your all-in-one digital logbook.",
+  keywords:
+    "flight logger, pilot logbook, digital logbook, flight data, aviation, pilot training, flight analysis, flight tracking, #pilotlife, #avgeek",
 };
 
 export default function RootLayout({
