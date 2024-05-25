@@ -9,10 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChevronDown, Home, LayoutList, LogOut, SquarePen } from "lucide-react";
 
 export function DropdownMenuComponent() {
   const { data: session, status } = useSession();
@@ -51,18 +51,32 @@ export function DropdownMenuComponent() {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => router.push("/home")}>
-            Home
+          <DropdownMenuItem asChild>
+            <Link href={"/home"} className="flex items-center gap-2">
+              <Home size={"16px"} />
+              Home
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/new-record")}>
-            New Record
+          <DropdownMenuItem asChild>
+            <Link href={"/new-record"} className="flex items-center gap-2">
+              <SquarePen size={"16px"} />
+              New Record
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/all-record")}>
-            All Record
+          <DropdownMenuItem asChild>
+            <Link href={"/all-record"} className="flex items-center gap-2">
+              <LayoutList size={"16px"} />
+              All Records
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()}>Log out</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => signOut()}
+          className="flex items-center gap-2"
+        >
+          <LogOut size={"16px"} /> Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

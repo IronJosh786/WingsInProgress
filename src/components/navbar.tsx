@@ -6,6 +6,7 @@ import { DropdownMenuComponent } from "./drop-down-menu";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
@@ -24,8 +25,8 @@ const Navbar = () => {
   return (
     <div className="sticky top-0 z-10 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:bg-gray-200 lg:dark:bg-zinc-800/30 py-3">
       <div className="flex justify-between items-center container px-1 xs:px-4">
-        <div
-          onClick={() => router.push("/")}
+        <Link
+          href={"/"}
           className="text-2xl font-bold flex gap-4 hover:cursor-pointer"
         >
           <Image
@@ -36,7 +37,7 @@ const Navbar = () => {
             className="-scale-x-100 -rotate-12"
           />
           <p className="hidden sm:flex">WingsInProgress</p>
-        </div>
+        </Link>
         <div className="flex items-center gap-4">
           <ModeToggle />
           {status === "authenticated" ? (
