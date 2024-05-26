@@ -13,7 +13,7 @@ export default function Home() {
           <code className="border-b-2 border-sky-500">Digital Logbook</code>
         </h3>
         <div className="grid sm:grid-cols-2 auto-rows-fr gap-2 p-2 mt-4">
-          <a className="group rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30">
+          <div className="group rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30">
             <h2 className="mb-3 text-lg font-semibold">
               Log Your Flight Details{" "}
             </h2>
@@ -21,9 +21,9 @@ export default function Home() {
               Easily record every aspect of your flights, from takeoff to
               touchdown and many more.
             </p>
-          </a>
+          </div>
 
-          <a className="group rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30">
+          <div className="group rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30">
             <h2 className="mb-3 text-lg font-semibold">
               Explore Your Flight History{" "}
             </h2>
@@ -31,9 +31,9 @@ export default function Home() {
               Access your complete flight history at a glance. Filter flights by
               location, flight type and sort them by date.
             </p>
-          </a>
+          </div>
 
-          <a className="group rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30">
+          <div className="group rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30">
             <h2 className="mb-3 text-lg font-semibold">
               Dive Deeper into Each Flight{" "}
             </h2>
@@ -41,9 +41,9 @@ export default function Home() {
               Delve into comprehensive details and information for every stage
               of your journey.
             </p>
-          </a>
+          </div>
 
-          <a className="group rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30">
+          <div className="group rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30">
             <h2 className="mb-3 text-lg font-semibold">
               Edit or Delete Records{" "}
             </h2>
@@ -51,7 +51,7 @@ export default function Home() {
               Seamlessly modify or remove existing records with precision and
               ease.
             </p>
-          </a>
+          </div>
         </div>
       </div>
     </main>

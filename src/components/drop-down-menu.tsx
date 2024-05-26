@@ -36,7 +36,7 @@ export function DropdownMenuComponent() {
       <DropdownMenuTrigger asChild>
         <Link
           href={"#"}
-          className="flex gap-2 items-center hover:cursor-pointer"
+          className="flex gap-2 items-center cursor-pointer active:ring-0 focus:ring-0 active:outline-none focus:outline-none"
         >
           <Avatar>
             <AvatarImage src={profilePicture} alt="profile picture" />

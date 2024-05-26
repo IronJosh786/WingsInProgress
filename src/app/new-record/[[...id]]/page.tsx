@@ -307,7 +307,7 @@ export default function Page() {
                 name="airCraft.model"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Aircraft model</FormLabel>
+                    <FormLabel>Aircraft Model</FormLabel>
                     <Input placeholder="e.g. Cessna 172" {...field} />
                     <FormMessage />
                   </FormItem>
@@ -318,7 +318,7 @@ export default function Page() {
                 name="airCraft.registration"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Aircraft registration</FormLabel>
+                    <FormLabel>Aircraft Registration</FormLabel>
                     <Input placeholder="e.g. VT-FSA" {...field} />
                     <FormMessage />
                   </FormItem>
@@ -371,7 +371,7 @@ export default function Page() {
                             {field.value ? (
                               format(field.value, "PPP")
                             ) : (
-                              <span>Pick a date</span>
+                              <span>Pick the date of departure</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -418,7 +418,7 @@ export default function Page() {
                             {field.value ? (
                               format(field.value, "PPP")
                             ) : (
-                              <span>Pick a date</span>
+                              <span>Pick the date of arrival</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
