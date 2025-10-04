@@ -38,7 +38,7 @@ export function DropdownMenuComponent() {
           href={"#"}
           className="flex gap-2 items-center cursor-pointer active:ring-0 focus:ring-0 active:outline-none focus:outline-none"
         >
-          <Avatar>
+          <Avatar className="h-9 w-9">
             <AvatarImage src={profilePicture} alt="profile picture" />
             <AvatarFallback>
               {session?.user.email?.charAt(0).toUpperCase()}

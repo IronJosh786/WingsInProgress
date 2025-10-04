@@ -34,7 +34,7 @@ const Navbar = () => {
             alt="Vercel Logo"
             width={100}
             height={24}
-            className="-scale-x-100 -rotate-12"
+            className="-scale-x-100 -rotate-12 h-8"
           />
           <p className="hidden sm:flex">WingsInProgress</p>
         </Link>
