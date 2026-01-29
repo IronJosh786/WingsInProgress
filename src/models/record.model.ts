@@ -96,12 +96,13 @@ const recordSchema: Schema<Record> = new Schema(
     },
     flownBy: {
       type: Schema.Types.ObjectId,
-      ref: "User",
-      index: true,
+      ref: "User"
     },
   },
   { timestamps: true }
 );
+
+recordSchema.index({ flownBy: 1, createdAt: -1 });
 
 const RecordModel =
   (mongoose.models?.Record as mongoose.Model<Record>) ||
